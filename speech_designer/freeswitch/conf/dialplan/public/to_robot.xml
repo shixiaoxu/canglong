@@ -1,0 +1,7 @@
+<include>
+    <extension name="public.to.robot">
+      <condition field="destination_number" expression="^(911)$">
+         <action application="lua" data="canglong_robot_ivr.lua $1"/>
+      </condition>
+    </extension>
+</include>
