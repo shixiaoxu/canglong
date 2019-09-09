@@ -15,42 +15,43 @@ type storageMysql struct {
 	db 			*sqlx.DB
 }
 
-func (s *storageMysql) QueryNodeByRequest(speech int64, number string, parent int64, text string) (en storage.S_Node, stat status.Status) {
-	var node []storage.S_Node
-	stat = status.StatusNotFound
-	en = storage.S_Node{
-		SN_ID:parent, S_ID:1,
-		SN_Parent:parent,
-		SN_Action:"play_and_detect_speech.file",
-		SN_Text:"对不起请说普通话或找管理设置话术",
-		SN_File:"test_error.mp3",
-		SN_Argc:0,
-		SN_Argv:"",
-	}
+
+func (s *storageMysql) QueryNodeByRequest(body storage.RequestBody) (en storage.S_Node, stat status.Status) {
+	var sql string
+	var dbnode []storage.S_Node
+	tm := time.Now()
+	date := fmt.Sprintf("%d-%02d-%02d",tm.Year(), tm.Month(),tm.Day())
+	time := fmt.Sprintf("%02d:%02d:%02d", tm.Hour(), tm.Minute(), tm.Second())
 
 	defer func() {
 		err := recover()
 		if err != nil {
 			logs.Error("Failed to mysql query : %s", err)
+			en = storage.S_Node{}
+			stat = status.StatusDBQueryRowNotFound
 		}
 	}()
 
-	if parent >= 0 {
-		tm := time.Now()
-		date := fmt.Sprintf("%d-%02d-%02d",tm.Year(), tm.Month(),tm.Day())
-		time := fmt.Sprintf("%02d:%02d:%02d", tm.Hour(), tm.Minute(), tm.Second())
-		sql := fmt.Sprintf(SqlQueryNodeFormartByRequest, text, parent, number, date, time)
-		logs.Debug(sql)
-		err := s.db.Select(&node, sql)
-		if err != nil {
-			logs.Error(err.Error())
-			return en, stat
-		}
-
-		stat = status.StatusOK
-		en = node[0]
+	if body.QueryMethod == "Next" {
+		sql = fmt.Sprintf(SqlQueryNextFormat, body.NodeTrigger, body.NodeParent, body.SpeechNumber, date, time)
+	} else if body.QueryMethod == "Frist" {
+		sql = fmt.Sprintf(SqlQueryFristFormat, body.SpeechNumber, date, time)
+	} else if body.QueryMethod == "Parent" {
+		sql = fmt.Sprintf(SqlQueryParentFormat, body.SpeechNumber, body.NodeParent, date, time)
 	} else {
+		en = storage.S_Node{}
+		stat = status.StatusDBQueryMethod
 		return en, stat
+	}
+
+	logs.Debug(sql)
+	err := s.db.Select(&dbnode, sql)
+	if err != nil {
+		en = storage.S_Node{}
+		stat = status.StatusDBQueryRowNotFound
+	} else {
+		en = dbnode[0]
+		stat = status.StatusOK
 	}
 
 	return en, stat
@@ -60,7 +61,7 @@ func (s *storageMysql)Init() (status.Status) {
 	db ,err := sqlx.Open(s.driver, s.driverUrl)
 	if err != nil {
 		logs.Error(err)
-		return status.StatusMysqlConnectFailed
+		return status.StatusDBConnectFailed
 	}
 
 	s.db = db

@@ -1,4 +1,4 @@
-package baidu_http
+package designer
 
 import (
 	"canglong/speech_designer/common/interface/storage"
@@ -7,23 +7,23 @@ import (
 	"net/http"
 )
 
-type BaiduAsrServer struct {
+type DesignerServer struct {
 	storage.Storage
 	ip 		string
 	port 	int
 }
 
-func (s *BaiduAsrServer) Listen() {
+func (s *DesignerServer) Listen() {
 	url := fmt.Sprintf("%s:%d",s.ip, s.port)
 
 	logs.Debug("Robot Server Listen : http://%s/query\n", url)
 
-	http.Handle("/query", s.newBaiduAsrHandler())
+	http.Handle("/query", s.newDesignerHandler())
 
 	http.ListenAndServe(url,nil)
 }
 
-func New(s storage.Storage,ip string, port int) *BaiduAsrServer {
-	return &BaiduAsrServer{s,ip, port}
+func New(s storage.Storage,ip string, port int) *DesignerServer {
+	return &DesignerServer{s,ip, port}
 }
 

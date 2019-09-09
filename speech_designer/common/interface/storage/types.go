@@ -32,3 +32,17 @@ type SN_Trigger struct {
 	SNT_Trigger		string
 	SN_ID			int64
 }
+
+type RequestBody struct {
+	SpeechId 			int64 		`json:"SpeechId"`
+	SpeechNumber		string		`json:"SpeechNumber"`
+	NodeParent			int64		`json:"NodeParent"`
+	NodeTrigger	 		string		`json:"NodeTrigger"`
+	QueryMethod			string 		`json:"QueryMethod"`
+}
+
+type ReponseBody struct {
+	Code 		int
+	Reason 		string
+	Node 		S_Node
+}

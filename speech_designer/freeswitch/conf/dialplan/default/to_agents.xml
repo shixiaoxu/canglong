@@ -1,0 +1,18 @@
+<include>
+
+  <extension name="default.to.kamailio.agents">
+    <condition field="destination_number" expression="^(9\d{11})$">
+      <!--<action application="set" data="effective_caller_id_number=${outbound_caller_id_number}"/>-->
+      <!--<action application="set" data="effective_caller_id_name=${outbound_caller_id_name}"/>-->
+      <!--
+      <action application="log" data="p1 = $1"/>
+      <action application="log" data="agents_agents_gateway = $${agents_gateway}"/>
+      <action application="log" data="default_areacode = ${default_areacode}"/>
+      <action application="bridge" data="sofia/gateway/$${agents_gateway}/1${default_areacode}$1"/>
+      -->
+      <action application="bridge" data="sofia/gateway/$${agents_gateway}/$1"/>
+      <action application="hangup" data=""/>
+    </condition>
+  </extension>
+
+</include>

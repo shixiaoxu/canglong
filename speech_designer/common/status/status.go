@@ -68,7 +68,10 @@ const (
 	StatusNotExtended                   = 510 // RFC 2774, 7
 	StatusNetworkAuthenticationRequired = 511 // RFC 6585, 6
 
-	StatusMysqlConnectFailed 			= 600
+
+	StatusDBConnectFailed 			= 600
+	StatusDBQueryMethod				= 601
+	StatusDBQueryRowNotFound		= 602
 )
 
 var statusText = map[Status]string{
@@ -136,7 +139,9 @@ var statusText = map[Status]string{
 	StatusNotExtended:                   "Not Extended",
 	StatusNetworkAuthenticationRequired: "Network Authentication Required",
 
-	StatusMysqlConnectFailed: "Failed To Connect Mysql",
+	StatusDBConnectFailed: "Connect Database",
+	StatusDBQueryMethod: "Query Method",
+	StatusDBQueryRowNotFound: "Row Not Found",
 }
 
 // StatusText returns a text for the HTTP status code. It returns the empty

@@ -1,0 +1,9 @@
+<include>
+
+    <extension name="public.to.default.kamailio.agents">
+      <condition field="destination_number" expression="^(9\d{11})$">
+        <action application="transfer" data="$1 XML default"/>
+      </condition>
+    </extension>
+
+</include>

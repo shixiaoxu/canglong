@@ -3,7 +3,7 @@ package main
 import (
 	"canglong/speech_designer/common/status"
 	sto "canglong/speech_designer/storage/mysql"
-	hser "canglong/speech_designer/server/baidu_http"
+	hser "canglong/speech_designer/server/designer"
 	"github.com/astaxie/beego/logs"
 	_ "github.com/go-sql-driver/mysql"
 )
