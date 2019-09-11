@@ -76,6 +76,8 @@ func (m *Message) Parse() error {
 			Error(ECouldNotReadyBody, err)
 			return err
 		}
+	} else {
+		return nil
 	}
 
 	msgType := cmr.Get("Content-Type")
